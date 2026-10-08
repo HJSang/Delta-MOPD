@@ -82,7 +82,7 @@ python -m pytest -q
 With `uv`, the equivalent isolated command is:
 
 ```bash
-uv run --python 3.12 --with-requirements requirements-test.txt python -m pytest -q
+uv run --no-project --python 3.12 --with-requirements requirements-test.txt python -m pytest -q
 ```
 
 Coverage includes target identities, padding/offset invariance, sampled-token

@@ -14,6 +14,8 @@ dist/
 .coverage*
 coverage.xml
 test-results.xml
+# GPU dependencies are provisioned externally; this is not an environment lock.
+uv.lock
 
 # Credentials and local configuration
 .env
