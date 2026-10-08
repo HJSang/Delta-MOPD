@@ -1,0 +1,100 @@
+import asyncio
+import concurrent.futures
+import logging
+import threading
+from collections.abc import Coroutine, Sequence
+from typing import Any, TypeVar
+
+logger = logging.getLogger(__name__)
+
+
+__all__ = ["get_async_loop", "run", "submit", "wait_futures", "eager_create_task"]
+
+_T = TypeVar("_T")
+
+
+# Create a background event loop thread
+class AsyncLoopThread:
+    def __init__(self):
+        self.loop = asyncio.new_event_loop()
+        self._thread = threading.Thread(target=self._start_loop, daemon=True)
+        self._thread.start()
+
+    def _start_loop(self):
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_forever()
+
+    def submit(self, coro: Coroutine[Any, Any, _T]) -> concurrent.futures.Future[_T]:
+        assert (
+            threading.current_thread() is not self._thread
+        ), "submitting from the loop thread and then blocking on the result would deadlock the loop"
+        return asyncio.run_coroutine_threadsafe(coro, self.loop)
+
+    def run(self, coro: Coroutine[Any, Any, _T]) -> _T:
+        # Schedule a coroutine onto the loop and block until it's done
+        return self.submit(coro).result()
+
+
+# Create one global instance
+async_loop = None
+_async_loop_init_lock = threading.Lock()
+
+
+def get_async_loop():
+    global async_loop
+    if async_loop is None:
+        with _async_loop_init_lock:
+            if async_loop is None:
+                async_loop = AsyncLoopThread()
+    return async_loop
+
+
+# TODO: rename these functions and classes
+def run(coro: Coroutine[Any, Any, _T]) -> _T:
+    """Run a coroutine in the background event loop."""
+    return get_async_loop().run(coro)
+
+
+def submit(coro: Coroutine[Any, Any, _T]) -> concurrent.futures.Future[_T]:
+    """Fire a coroutine on the background event loop and return its future."""
+    return get_async_loop().submit(coro)
+
+
+def wait_futures(futures: Sequence[concurrent.futures.Future]) -> list[Any]:
+    """Collect a fan-out, raising the first error once every future has settled."""
+    results: list[Any] = []
+    errors: list[Exception] = []
+    for index, future in enumerate(futures):
+        try:
+            results.append(future.result())
+        except Exception as e:
+            logger.warning(f"wait_futures index={index} failed", exc_info=e)
+            results.append(None)
+            errors.append(e)
+
+    if errors:
+        raise errors[0]
+    return results
+
+
+async def eager_create_task(coro: Coroutine[object, object, _T]) -> asyncio.Task[_T]:
+    """Create a task and yield so it starts executing immediately.
+
+    Unlike bare ``asyncio.create_task``, this ensures the task's first code
+    (including any ``.remote()`` calls) runs before the caller continues.
+    """
+    task = asyncio.create_task(coro)
+    await asyncio.sleep(0)
+    return task
+
+
+class AsyncioGatherUtils:
+    @staticmethod
+    def has_error(outputs):
+        return any(isinstance(output, BaseException) for output in outputs)
+
+    @staticmethod
+    def log_error(outputs, debug_name: str):
+        for i, output in enumerate(outputs):
+            if isinstance(output, BaseException):
+                logger.warning(f"{debug_name} error index={i}", exc_info=output)

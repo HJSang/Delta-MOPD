@@ -1,0 +1,11 @@
+# CPU-only contract tests. GPU training uses the provisioned Miles environment.
+torch>=2.6
+transformers==5.12.1
+pytest>=8
+pytest-asyncio
+aiohttp
+pybase64
+numpy
+ray
+wandb
+omegaconf

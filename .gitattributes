@@ -1,0 +1,2 @@
+# Preserve upstream prompt-template whitespace: it can affect tokenization.
+*.jinja whitespace=-blank-at-eol
