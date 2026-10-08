@@ -1,4 +1,4 @@
-# Final-draft ShiftMOPD contract
+# Final-draft Δ-MOPD contract
 
 Source: [arXiv:2610.10460v1](https://arxiv.org/pdf/2610.10460), October 7, 2026,
 especially Eq. 1–2 and Appendix A–B, D, F. This guide describes the explicit
@@ -13,7 +13,7 @@ in both arms. Change only `--opd-target-mode endpoint|shiftmopd`:
 
 ```
 endpoint:  z = z_A + sum_selected(z_T - z_A)
-shiftmopd: z = z_A + sum_selected(z_T - z_B)
+Δ-MOPD:    z = z_A + sum_selected(z_T - z_B)
 ```
 
 A is the frozen initial student, not its moving training weights. B is each

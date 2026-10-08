@@ -18,7 +18,7 @@ Every model must pass the same-tokenizer preflight. URLs below are placeholders.
 ```
 
 Omit `--opd-teacher-adapters`. The endpoint arm does not consume precursor
-scores; the ShiftMOPD arm does. The current paper preflight requires an anchor
+scores; the Δ-MOPD arm does. The current paper preflight requires an anchor
 and a complete model manifest in both arms, even though an endpoint with only
 one selected teacher algebraically reduces to that teacher.
 

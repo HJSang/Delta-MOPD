@@ -7,7 +7,7 @@ release or an automatically synchronized fork.
 - Recorded upstream checkout: `feb4e7cc81e85a9e10b7c21795ce8d4e4c9ca3e0`.
 - Source lineage: the local Miles working tree imported into
   `multi_teacher_opd/miles_mopd` on September 25, 2026, with subsequent local
-  MOPD/ShiftMOPD changes through October 8, 2026.
+  MOPD/Δ-MOPD changes through October 8, 2026.
 - The upstream revision identifies the recorded base, **not** the entire current
   tree. This snapshot includes modified and locally added framework files.
 - Retained: Miles runtime/plugins, training entrypoints, selected Qwen model

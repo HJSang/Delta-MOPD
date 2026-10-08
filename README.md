@@ -1,4 +1,4 @@
-# ShiftMOPD
+# Δ-MOPD
 
 Research code for **Composing What Each Teacher Learned: Multi-Teacher On-Policy
 Distillation through Teacher-Relative Shifts**.
@@ -8,7 +8,7 @@ Distillation through Teacher-Relative Shifts**.
 [Scorer deployment](docs/scoring.md) ·
 [Diagnostics](docs/advanced/shiftmopd-paper-diagnostics.md)
 
-This repository contains our Miles-based MOPD and ShiftMOPD implementation.
+This repository contains our Miles-based MOPD and **Δ-MOPD** implementation.
 It is **private during review**. CPU correctness tests are available; the new
 paper-aligned execution path still needs production SGLang numerical-parity,
 GPU throughput, and multi-rank validation. This is not yet a turnkey
@@ -17,7 +17,7 @@ reproduction of every experiment in the paper.
 ## Motivation
 
 A post-trained teacher contains both its precursor's behavior and changes learned
-during post-training. ShiftMOPD transfers the teacher-relative changes while
+during post-training. Δ-MOPD transfers the teacher-relative changes while
 anchoring the target to the student's initial model. The endpoint control instead
 composes teachers relative to that same student anchor.
 
@@ -27,7 +27,7 @@ student-generated token prefix, the two target scores are:
 
 ```text
 MOPD endpoint: z_endpoint = z_A + sum_{i in S}(z_Ti - z_A)
-ShiftMOPD:     z_shift    = z_A + sum_{i in S}(z_Ti - z_Bi)
+Δ-MOPD:        z_shift    = z_A + sum_{i in S}(z_Ti - z_Bi)
 ```
 
 Normalize the target scores to obtain `q`. With one selected teacher, the endpoint
@@ -113,6 +113,7 @@ for framework/environment setup and [provenance](PROVENANCE.md) for this snapsho
    seed, data order, teacher selection, sampling, batch size, update budget,
    optimizer, partition, and evaluation protocol for both arms.
 5. Change only `--opd-target-mode endpoint` to `--opd-target-mode shiftmopd`
+   (the CLI value retains its historical name; this selects **Δ-MOPD**)
    for the controlled target comparison. Run GPU parity and a short smoke test
    before a full experiment.
 
@@ -186,7 +187,7 @@ length-cap details are in the implementation contract.
 ## Citation and acknowledgments
 
 ```bibtex
-@article{sang2026shiftmopd,
+@article{sang2026deltamopd,
   title={Composing What Each Teacher Learned: Multi-Teacher On-Policy
          Distillation through Teacher-Relative Shifts},
   author={Sang, Hejian and Zhou, Zhengze and Hamidi, Shayan Mohajer and
