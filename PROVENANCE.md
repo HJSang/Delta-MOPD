@@ -22,6 +22,10 @@ release or an automatically synchronized fork.
 - The live transport smoke tool now takes an explicit local `--tokenizer` path
   instead of a historical machine-specific directory. Upstream chat-template
   whitespace is preserved because it can change tokenization.
+- October 9, 2026: added a shared dry-run-first SGLang launcher and standalone /
+  multi-LoRA recipe configurations, with CPU command/routing/validation tests.
+  These additions do not modify the training objective. Live recipe execution
+  and production paper-path GPU parity are not claimed by the source release.
 
 Local additions and modifications include teacher-relative target composition,
 teacher routing and multi-LoRA scoring, per-position selected-ID/packed transport,

@@ -1,0 +1,34 @@
+{
+  "engines": {
+    "anchor": {
+      "model_path": "/models/DeepSeek-R1-Distill-Qwen-1.5B",
+      "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+      "devices": [0],
+      "port": 31000
+    },
+    "math": {
+      "model_path": "/models/Polaris-7B-Preview",
+      "model_id": "POLARIS-Project/Polaris-7B-Preview",
+      "devices": [1],
+      "port": 31001
+    },
+    "math_base": {
+      "model_path": "/models/DeepSeek-R1-Distill-Qwen-7B",
+      "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "devices": [2],
+      "port": 31002
+    },
+    "science_if": {
+      "model_path": "/models/Nemotron-Research-Reasoning-Qwen-1.5B-v1",
+      "model_id": "nvidia/Nemotron-Research-Reasoning-Qwen-1.5B",
+      "devices": [3],
+      "port": 31003
+    }
+  },
+  "anchor": "anchor",
+  "teachers": {
+    "math": {"engine": "math"},
+    "science_if": {"engine": "science_if"}
+  },
+  "bases": {"math": "math_base", "science_if": "anchor"}
+}

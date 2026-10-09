@@ -6,12 +6,13 @@ Distillation through Teacher-Relative Shifts**.
 [Paper (arXiv:2610.10460)](https://arxiv.org/abs/2610.10460) ·
 [PDF](https://arxiv.org/pdf/2610.10460) ·
 [Models](#models) · [Datasets](#datasets) ·
+[Serving recipes](recipes/README.md) ·
 [Implementation contract](docs/advanced/shiftmopd-final-draft.md) ·
 [Scorer deployment](docs/scoring.md) ·
 [Diagnostics](docs/advanced/shiftmopd-paper-diagnostics.md)
 
 This repository contains our Miles-based MOPD and **Δ-MOPD** implementation.
-It is **private during review**. CPU correctness tests are available; the new
+This is a **research preview**. CPU correctness tests are available; the new
 paper-aligned execution path still needs production SGLang numerical-parity,
 GPU throughput, and multi-rank validation. This is not yet a turnkey
 reproduction of every experiment in the paper.
@@ -114,6 +115,20 @@ documents evaluation settings.
 
 ## Training configuration
 
+Two executable, dry-run-first serving recipes are included:
+
+1. **[Standalone teacher engines](recipes/standalone/README.md):** separate
+   full-checkpoint servers for the paper's experts, with frozen base and anchor
+   reuse where identities match.
+2. **[Multi-LoRA teacher engine](recipes/multi_lora/README.md):** one shared
+   base with named expert adapters, plus the frozen student anchor. This requires
+   genuine same-base adapters; it cannot combine the paper's 1.5B and 7B experts
+   into one base engine.
+
+Both use the same launcher, preserve exact student token IDs, and emit routing
+arguments for either MOPD or Δ-MOPD. They launch scorers, not an entire training
+cluster. See [shared setup and validation](recipes/README.md).
+
 Select **`--opd-objective paper`** explicitly: the inherited runtime otherwise
 defaults to `legacy`. Historical runs are not relabeled as paper reproductions.
 
@@ -155,15 +170,6 @@ K. Diagnostic top-16 is separate from training support and decoding top-K.
 Configure W&B through your environment (`WANDB_API_KEY`) and the normal Miles
 tracking arguments. Never put credentials, private deployment addresses, run
 logs, model weights, or evaluation traces into Git.
-
-## Before making this repository public
-
-- [ ] Verify deployed SGLang scores against dense reference outputs.
-- [ ] Complete CUDA and multi-rank training smoke tests for both paper arms.
-- [ ] Freeze a tested serving/training image and dataset/verifier manifests.
-- [ ] Measure full-partition memory and throughput; document practical limits.
-- [ ] Review reproduction claims, licenses, and included files once more.
-- [ ] Change visibility only after explicit approval.
 
 ## Citation and acknowledgments
 

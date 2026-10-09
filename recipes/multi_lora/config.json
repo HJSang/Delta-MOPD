@@ -1,0 +1,28 @@
+{
+  "engines": {
+    "anchor": {
+      "model_path": "/models/Qwen3-1.7B",
+      "model_id": "Qwen/Qwen3-1.7B",
+      "devices": [0],
+      "port": 32000
+    },
+    "experts": {
+      "model_path": "/models/Qwen3-4B",
+      "model_id": "Qwen/Qwen3-4B",
+      "devices": [1],
+      "port": 32001,
+      "adapters": {
+        "math": "/adapters/qwen3-4b-math",
+        "code": "/adapters/qwen3-4b-code",
+        "if": "/adapters/qwen3-4b-if"
+      }
+    }
+  },
+  "anchor": "anchor",
+  "teachers": {
+    "math": {"engine": "experts", "adapter": "math"},
+    "code": {"engine": "experts", "adapter": "code"},
+    "if": {"engine": "experts", "adapter": "if"}
+  },
+  "bases": {"math": "experts", "code": "experts", "if": "experts"}
+}
